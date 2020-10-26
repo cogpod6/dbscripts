@@ -1,0 +1,23 @@
+create database truck_scheduling;
+
+use truck_scheduling;
+
+create table dc_type (id int not null auto_increment, type varchar(20) not null, primary key(id));
+
+create table dc (id int not null auto_increment, dc_number int not null, city varchar(20) default null, dc_type_id int not null, foreign key (dc_type_id) references dc_type(id), primary key(id));
+
+create table dc_slots (id int not null auto_increment, dc_id int not null, time_slots varchar(50) not null, max_trucks int not null, foreign key (dc_id) references dc(id), primary key(id));
+
+create table vendor (id int not null auto_increment, vendor_name varchar(100) not null, vendor_email varchar(50) default null, vendor_ph_number varchar(20) default null, vendor_address varchar(50) default null, primary key (id));
+
+create table truck_type (id int not null auto_increment, type varchar(100) not null, primary key (id));
+
+create table truck (id int not null auto_increment, truck_number varchar(100) not null, truck_name varchar(100) not null, truck_type_id int not null, foreign key (truck_type_id) references truck_type (id), primary key (id));
+​
+create table appointment (id int not null auto_increment, truck_id int not null, dc_number varchar(10) not null, slot_id int not null, appointment_date date not null, primary key (id), foreign key (truck_id) references truck (id), foreign key (slot_id) references dc_slots(id));
+
+create table appointment_po (id int not null auto_increment, appointment_id int not null, po_number varchar(10) not null, primary key (id), foreign key (appointment_id) references appointment(id));
+
+create table po (po_number varchar(10) not null, po_date datetime not null, po_address varchar(50) default null, ordered_quantity int default 0, primary key (po_number));
+
+create table po_line (id int not null auto_increment, po_number varchar(10) not null, po_line_number int not null, item_number varchar(10) not null, item_name varchar(10) not null, quantity int default 0, foreign key (po_number) references po (po_number), primary key (id));
